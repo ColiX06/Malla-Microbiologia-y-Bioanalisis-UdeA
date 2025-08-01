@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva - Microbiología y Bioanálisis</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00564d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #00564d;
+      color: white;
+    }
+    tr:hover {
+      background-color: #e0f7f4;
+    }
+    .completada {
+      background-color: #b9f6ca !important;
+    }
+    #creditos-total {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .btn-toggle {
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #00bfa5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Microbiología y Bioanálisis</h1>
+  <p id="creditos-total">Créditos completados: 0 / 180</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Semestre</th>
+        <th>Materia</th>
+        <th>Créditos</th>
+        <th>Abre</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-materias"></tbody>
+  </table>
+
+  <script>
+    const materias = [
+      { nombre: "Biología general", creditos: 3, abre: ["Genética general", "Biología celular"], semestre: 1 },
+      { nombre: "Fund. Química", creditos: 4, abre: ["Bioquímica", "Biología celular"], semestre: 1 },
+      { nombre: "Matemáticas", creditos: 3, abre: ["Instrumentación", "Bioestadística"], semestre: 1 },
+      { nombre: "Comunicación", creditos: 2, abre: ["Socioantropologia"], semestre: 1 },
+      { nombre: "Introducción al programa", creditos: 1, abre: ["Teoría del conocimiento"], semestre: 1 },
+      { nombre: "Sistemas y tecnologías de la información", creditos: 2, abre: ["Construcción de trabajo de grado I"], semestre: 1 },
+      { nombre: "English I", creditos: 2, abre: ["English II"], semestre: 1 },
+
+      { nombre: "Bioquímica", creditos: 4, abre: ["Biología molecular", "Fisiología microbiana", "Farmacología y Toxicología"], semestre: 2 },
+      { nombre: "Biología celular", creditos: 4, abre: ["Biología molecular", "Microbiología", "Morfofisiología I"], semestre: 2 },
+      { nombre: "Instrumentación", creditos: 3, abre: ["Metrología", "Microbiología", "Morfofisiología I"], semestre: 2 },
+      { nombre: "Genética general", creditos: 3, abre: [], semestre: 2 },
+      { nombre: "Socioantropologia", creditos: 2, abre: ["Promoción de la salud"], semestre: 2 },
+      { nombre: "English II", creditos: 2, abre: ["English III"], semestre: 2 },
+
+      { nombre: "Biología molecular", creditos: 3, abre: ["Ecología Microbiana", "Inmunología", "Genética microbiana"], semestre: 3 },
+      { nombre: "Microbiología General", creditos: 4, abre: ["Fisiología microbiana", "Genética microbiana"], semestre: 3 },
+      { nombre: "Morfofisiología I", creditos: 3, abre: ["Morfofisiología II"], semestre: 3 },
+      { nombre: "Promoción de la salud", creditos: 3, abre: ["Epidemiología", "Salud pública"], semestre: 3 },
+      { nombre: "Teoría del conocimiento", creditos: 2, abre: ["Construcción de trabajo de grado I"], semestre: 3 },
+      { nombre: "English III", creditos: 2, abre: ["English IV"], semestre: 3 },
+
+      { nombre: "Fisiología Microbiana", creditos: 4, abre: ["Ecología Microbiana"], semestre: 4 },
+      { nombre: "Genética Microbiana", creditos: 3, abre: ["Ingeniería genética"], semestre: 4 },
+      { nombre: "Morfofisiología II", creditos: 4, abre: ["Inmunología", "Farmacología y Toxicología", "Química clínica", "Hematología"], semestre: 4 },
+      { nombre: "Bioestadística", creditos: 4, abre: ["Ecología Microbiana", "Metrología", "Construcción de trabajo de grado I"], semestre: 4 },
+      { nombre: "Formación ciudadana", creditos: 1, abre: [], semestre: 4 },
+      { nombre: "English IV", creditos: 2, abre: ["English V"], semestre: 4 },
+
+      { nombre: "Ecología Microbiana", creditos: 4, abre: ["Micología", "Parasitología", "Virología", "Bacteriología", "Aseguramiento de la calidad"], semestre: 5 },
+      { nombre: "Metrología", creditos: 3, abre: ["Aseguramiento de la calidad"], semestre: 5 },
+      { nombre: "Ingeniería genética", creditos: 4, abre: [], semestre: 5 },
+      { nombre: "Inmunología", creditos: 3, abre: ["Parasitología", "Virología", "Bacteriología", "Aseguramiento de la calidad"], semestre: 5 },
+      { nombre: "Construcción de trabajo de grado I", creditos: 2, abre: ["Construcción de trabajo de grado II", "Gerencia de proyectos y desarrollo empresarial"], semestre: 5 },
+      { nombre: "English V", creditos: 2, abre: [], semestre: 5 },
+
+      { nombre: "Micología", creditos: 3, abre: ["Talleres de laboratorio clínico"], semestre: 6 },
+      { nombre: "Química clínica", creditos: 5, abre: ["Talleres de laboratorio clínico", "Principios de administración"], semestre: 6 },
+      { nombre: "Hematología", creditos: 4, abre: ["Talleres de laboratorio clínico", "Principios de administración"], semestre: 6 },
+      { nombre: "Farmacología y Toxicología", creditos: 3, abre: ["Bacteriología"], semestre: 6 },
+      { nombre: "Construcción de trabajo de grado II", creditos: 2, abre: [], semestre: 6 },
+
+      { nombre: "Virología", creditos: 3, abre: ["Talleres de laboratorio clínico"], semestre: 7 },
+      { nombre: "Parasitología", creditos: 4, abre: ["Talleres de laboratorio clínico"], semestre: 7 },
+      { nombre: "Bacteriología", creditos: 4, abre: ["Talleres de laboratorio clínico", "Salud y ambiente"], semestre: 7 },
+      { nombre: "Aseguramiento de la calidad", creditos: 2, abre: [], semestre: 7 },
+      { nombre: "Epidemiología", creditos: 3, abre: ["Salud pública"], semestre: 7 },
+
+      { nombre: "Talleres de laboratorio clínico", creditos: 3, abre: [], semestre: 8 },
+      { nombre: "Principios de administración", creditos: 2, abre: [], semestre: 8 },
+      { nombre: "Salud y ambiente", creditos: 3, abre: [], semestre: 8 },
+      { nombre: "Salud pública", creditos: 3, abre: [], semestre: 8 },
+      { nombre: "Gerencia de proyectos y desarrollo empresarial", creditos: 2, abre: [], semestre: 8 },
+      { nombre: "Ética y bioética", creditos: 2, abre: [], semestre: 8 },
+      { nombre: "Sujeto y vida profesional", creditos: 2, abre: [], semestre: 8 },
+
+      { nombre: "Práctica profesional I", creditos: 15, abre: [], semestre: 9 },
+      { nombre: "Práctica profesional II", creditos: 15, abre: [], semestre: 10 }
+    ];
+
+    let materiasCompletadas = new Set();
+
+    function renderTabla() {
+      const tbody = document.getElementById("tabla-materias");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      materias.forEach(m => {
+        const tr = document.createElement("tr");
+        if (materiasCompletadas.has(m.nombre)) {
+          tr.classList.add("completada");
+          total += m.creditos;
+        }
+        const btn = `<button class='btn-toggle' onclick='toggleMateria("${m.nombre}")'>${materiasCompletadas.has(m.nombre) ? "✓" : "Marcar"}</button>`;
+        tr.innerHTML = `
+          <td>${m.semestre}</td>
+          <td>${m.nombre}</td>
+          <td>${m.creditos}</td>
+          <td>${m.abre.length > 0 ? m.abre.join(", ") : "—"}</td>
+          <td>${btn}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("creditos-total").textContent = `Créditos completados: ${total} / 180`;
+    }
+
+    function toggleMateria(nombre) {
+      if (materiasCompletadas.has(nombre)) {
+        materiasCompletadas.delete(nombre);
+      } else {
+        materiasCompletadas.add(nombre);
+      }
+      renderTabla();
+    }
+
+    renderTabla();
+  </script>
+</body>
+</html>
