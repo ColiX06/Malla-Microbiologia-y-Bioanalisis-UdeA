@@ -1,0 +1,14 @@
+
+.bloqueada {
+  background-color: #e5e7eb; /* gris claro */
+  color: #9ca3af; /* texto gris */
+  cursor: not-allowed;
+}
+.desbloqueada {
+  background-color: #cfe8fc;
+  cursor: pointer;
+}
+.completada {
+  background-color: #60a5fa !important;
+  color: white;
+}
