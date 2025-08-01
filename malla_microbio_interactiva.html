@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva - Microbiología y Bioanálisis</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00564d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #00564d;
+      color: white;
+    }
+    tr:hover {
+      background-color: #e0f7f4;
+    }
+    .completada {
+      background-color: #b9f6ca !important;
+    }
+    #creditos-total {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .btn-toggle {
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #00bfa5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Microbiología y Bioanálisis</h1>
+  <p id="creditos-total">Créditos completados: 0 / 180</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Semestre</th>
+        <th>Materia</th>
+        <th>Créditos</th>
+        <th>Abre</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-materias"></tbody>
+  </table>
+
+  <script>
+    const materias = [
+      { nombre: "Biología general", creditos: 3, abre: ["Genética general", "Biología celular"], semestre: 1 },
+      { nombre: "Fund. Química", creditos: 4, abre: ["Bioquímica", "Biología celular"], semestre: 1 },
+      { nombre: "Matemáticas", creditos: 3, abre: ["Instrumentación", "Bioestadística"], semestre: 1 },
+      { nombre: "Comunicación", creditos: 2, abre: ["Socioantropologia"], semestre: 1 },
+      { nombre: "Introducción al programa", creditos: 1, abre: ["Teoría del conocimiento"], semestre: 1 },
+      { nombre: "Sistemas y tecnologías de la información", creditos: 2, abre: ["Construcción de trabajo de grado I"], semestre: 1 },
+      { nombre: "English I", creditos: 2, abre: ["English II"], semestre: 1 },
+      { nombre: "Bioquímica", creditos: 4, abre: ["Biología molecular", "Fisiología microbiana", "Farmacología y Toxicología"], semestre: 2 },
+      { nombre: "Biología celular", creditos: 4, abre: ["Biología molecular", "Microbiología", "Morfofisiología I"], semestre: 2 },
+      { nombre: "Instrumentación", creditos: 3, abre: ["Metrología", "Microbiología", "Morfofisiología I"], semestre: 2 },
+      { nombre: "Genética general", creditos: 3, abre: [], semestre: 2 },
+      { nombre: "Socioantropologia", creditos: 2, abre: ["Promoción de la salud"], semestre: 2 },
+      { nombre: "English II", creditos: 2, abre: ["English III"], semestre: 2 }
+      // Continúa agregando las demás materias siguiendo este formato
+    ];
+
+    let materiasCompletadas = new Set();
+
+    function renderTabla() {
+      const tbody = document.getElementById("tabla-materias");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      materias.forEach(m => {
+        const tr = document.createElement("tr");
+        if (materiasCompletadas.has(m.nombre)) {
+          tr.classList.add("completada");
+          total += m.creditos;
+        }
+        const btn = `<button class='btn-toggle' onclick='toggleMateria("${m.nombre}")'>${materiasCompletadas.has(m.nombre) ? "✓" : "Marcar"}</button>`;
+        tr.innerHTML = `
+          <td>${m.semestre}</td>
+          <td>${m.nombre}</td>
+          <td>${m.creditos}</td>
+          <td>${m.abre.length > 0 ? m.abre.join(", ") : "—"}</td>
+          <td>${btn}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("creditos-total").textContent = `Créditos completados: ${total} / 180`;
+    }
+
+    function toggleMateria(nombre) {
+      if (materiasCompletadas.has(nombre)) {
+        materiasCompletadas.delete(nombre);
+      } else {
+        materiasCompletadas.add(nombre);
+      }
+      renderTabla();
+    }
+
+    renderTabla();
+  </script>
+</body>
+</html>
